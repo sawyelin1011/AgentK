@@ -42,3 +42,22 @@ jobs:
           name: agent-k-linux-appimage
           path: release/*.AppImage
           if-no-files-found: error
+
+  desktop-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run check:desktop
+      - name: Build Windows Installer
+        run: npm run dist:windows -- --publish never
+      - name: Upload Windows Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-k-windows-installer
+          path: release/*.exe
+          if-no-files-found: error
